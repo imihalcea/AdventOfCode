@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Day12.fs" />
+    <Compile Include="Day10.fs" />
+    <Compile Include="Day08.fs" />
+    <Compile Include="Day06.fs" />
+    <Compile Include="Day04.fs" />
+    <Compile Include="Day02.fs" />
+    <Compile Include="Day01.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharp.Data" Version="3.3.2" />
+    <PackageReference Include="FSharpx.Collections" Version="2.1.1" />
+    <PackageReference Include="MathNet.Numerics.FSharp" Version="4.9.0" />
+    <PackageReference Include="SkiaSharp" Version="1.68.1" />
+  </ItemGroup>
+</Project>

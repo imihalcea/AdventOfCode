@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\aoc2019.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TestsDay12.fs" />
+    <Compile Include="TestsDay10.fs" />
+    <Compile Include="TestsDay08.fs" />
+    <Compile Include="TestsDay06.fs" />
+    <Compile Include="TestsDay04.fs" />
+    <Compile Include="TestsDay02.fs" />
+    <Compile Include="TestsDay01.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Include="coverlet.collector" Version="1.0.1" />
+  </ItemGroup>
+</Project>
