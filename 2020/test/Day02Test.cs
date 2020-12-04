@@ -8,32 +8,18 @@ namespace _2020.test
     [TestFixture]
     public class Day02Test
     {
+        private const string INPUT_FILE_PATH = "test/day02.txt";
 
         [Test]
         public void answer_part1()
         {
-            Answer(Part1,DataSet());
+            Answer(Part1,INPUT_FILE_PATH);
         }
         
         [Test]
         public void answer_part2()
         {
-            Answer(Part2,DataSet());
-        }
-        public Entry[] DataSet()
-        {
-            return File.ReadAllLines("test/day02.txt")
-                        .Select(l=>l.Split(' '))
-                        .Select(ToEntry)
-                        .ToArray();
-            
-            Entry ToEntry(string[] line)
-            {
-                var min_max = line[0].Split('-').Select(int.Parse).ToArray();
-                var c = line[1].First();
-                var pw = line.Last();
-                return new Entry(min_max[0], min_max[1],c,pw);
-            }
+            Answer(Part2,INPUT_FILE_PATH);
         }
     }
 }

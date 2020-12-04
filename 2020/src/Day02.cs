@@ -1,16 +1,32 @@
 using System;
+using System.IO;
 using System.Linq;
 
 namespace _2020
 {
     public class Day02
     {
-        public static int Part1(Entry[] data) =>
-            data.Count(e => e.IsValid());
+        public static int Part1(string filePath) =>
+            DataSet(filePath).Count(it => it.RespectsCountingPolicy());
 
-        public static int Part2(Entry[] data) =>
-            data.Count(e => e.IsValid2());
+        public static int Part2(string filePath) =>
+            DataSet(filePath).Count(it => it.RespectsPositionPolicy());
 
+        private static Entry[] DataSet(string filePath)
+        {
+            return File.ReadAllLines(filePath)
+                .Select(l=>l.Split(' '))
+                .Select(ToEntry)
+                .ToArray();
+            
+            Entry ToEntry(string[] line)
+            {
+                var min_max = line[0].Split('-').Select(int.Parse).ToArray();
+                var c = line[1].First();
+                var pw = line.Last();
+                return new Entry(min_max[0], min_max[1],c,pw);
+            }
+        }
         
         public class Entry
         {
@@ -27,7 +43,7 @@ namespace _2020
                 Pwd = pwd;
             }
 
-            public bool IsValid()
+            public bool RespectsCountingPolicy()
             {
                 var charCounters = Pwd.GroupBy(c => c).ToDictionary(g => g.Key, g => g.Count());
                 return charCounters.ContainsKey(PolicyChar)
@@ -35,7 +51,7 @@ namespace _2020
                        && charCounters[PolicyChar] <= N2;
             }
             
-            public bool IsValid2() => 
+            public bool RespectsPositionPolicy() => 
                 (Pwd[N1-1] == PolicyChar) ^ (Pwd[N2-1] == PolicyChar);
         }
     }
