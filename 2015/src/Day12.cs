@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using _2015.tools;
 
 namespace _2015
@@ -12,44 +14,36 @@ namespace _2015
 
         public static int Part2(string input)
         {
-            var slicesToIgnore = SlicesToIgnore(input,'{', "red", '}').ToArray();
-            var substringsExcept = input.SubstringsExcept(slicesToIgnore).ToArray();
-            foreach (var slice in substringsExcept)
-            {
-                if(slice.Contains("red"))
-                    Console.WriteLine(slice);
-            }
-
-            var reds = substringsExcept.Select(SumIntegers).Sum();
-            var all = SumIntegers(input);
-            return all-reds;
+            var withoutReds = Ignore(input,@"\{[^\{\}]*\:""red""[^\{\}]*\}");
+            var all = SumIntegers(withoutReds);
+            return all;
         }
-            
 
-        public static IEnumerable<(int, int)> SlicesToIgnore(string s, char chStart, string value, char chEnd)
-        {
-            var head = -1;
-            Func<int,bool> isset = (h)=> h >= 0;
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (s[i] == chStart)
+        public static int Solve(string input, bool skipRed=true) {
+            int Traverse(JsonElement t) {
+                return t.ValueKind switch
                 {
-                    if (!isset(head) ||(isset(head) && !s.Substring(head,i-head).Contains(value)))
-                    {
-                        head = i;
-                        
-                    }
-                }
-
-                if (s[i] == chEnd)
-                {
-                    if (isset(head) && s.Substring(head, i - head).Contains(value))
-                    {
-                        yield return (head, i);
-                        head = -1;
-                    }                    
-                } 
+                    JsonValueKind.Object when skipRed && t.EnumerateObject().Any(
+                        p => p.Value.ValueKind == JsonValueKind.String && p.Value.GetString() == "red") => 0,
+                    JsonValueKind.Object => t.EnumerateObject().Select(p => Traverse(p.Value)).Sum(),
+                    JsonValueKind.Array => t.EnumerateArray().Select(Traverse).Sum(),
+                    JsonValueKind.Number => t.GetInt32(),
+                    _ => 0
+                };
             }
+
+            return Traverse(JsonDocument.Parse(input).RootElement);
+        }
+
+        private static string Ignore(string s, string pattern)
+        {
+                var regExp = new Regex(pattern);
+                s = regExp.Replace(s, string.Empty);
+                while (regExp.IsMatch(s))
+                {
+                    s = regExp.Replace(s, string.Empty);
+                }
+            return s;
         }
     }
 }
