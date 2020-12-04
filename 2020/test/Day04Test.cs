@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using NFluent;
 using NUnit.Framework;
 using static _2020.Day04;
@@ -11,17 +7,18 @@ namespace _2020.test
     [TestFixture]
     public class Day04Test
     {
+        private const string INPUT_FILE_PATH = "test/day04.txt";
+
         [Test]
         public void answer_part1()
         {
-            var passportInfos = DataSet().ToArray();
-            Answer(Part1,passportInfos);
+            Answer(Part1,INPUT_FILE_PATH);
         }
         
         [Test]
         public void answer_part2()
         {
-            Answer(Part2,DataSet().ToArray());
+            Answer(Part2,INPUT_FILE_PATH);
         }
 
         [TestCase("ecl:gry pid:860033327 eyr:2020 hcl:#fffffd byr:1937 iyr:2017 cid:147 hgt:183cm",true)]
@@ -32,21 +29,6 @@ namespace _2020.test
         {
             var passport = new PassportInfo(input);
             Check.That(passport.IsComplete()).IsEqualTo(expected);
-        }
-
-        public IEnumerable<PassportInfo> DataSet()
-        {
-            var lines = File.ReadAllLines("test/day04.txt");
-            var passportData = string.Empty;
-            foreach (var line in lines)
-            {
-                if (line.Trim() == string.Empty)
-                {
-                    yield return new PassportInfo(passportData);
-                    passportData = string.Empty;
-                }
-                passportData = string.Concat(passportData, " ", line.Trim());
-            }
         }
     }
 }

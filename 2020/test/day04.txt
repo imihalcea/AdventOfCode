@@ -987,4 +987,3 @@ pid:678964478
 
 iyr:2010 pid:623705680
 ecl:hzl hgt:181cm byr:1980 hcl:#341e13 eyr:2028
-
