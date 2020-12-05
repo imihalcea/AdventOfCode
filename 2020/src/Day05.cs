@@ -24,9 +24,9 @@ namespace _2020
             return row * COLS + col;
         }
 
-        private static int DecodePart(string part, (int start, int end) startRange) => part.Aggregate(startRange, NextRange).start;
+        private static int DecodePart(string part, (int start, int end) startRange) => part.Aggregate(startRange, HalfRange).start;
 
-        private static (int, int) NextRange((int, int) range, char c) => (c == 'F' || c == 'L') ? LowerHalf(range) : UpperHalf(range);
+        private static (int, int) HalfRange((int, int) range, char c) => (c == 'F' || c == 'L') ? LowerHalf(range) : UpperHalf(range);
    
         private static (int, int) LowerHalf((int a, int b) r) => (r.a, r.b - (r.b - r.a) / 2 - 1);
         
