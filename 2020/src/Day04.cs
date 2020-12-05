@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using static System.Environment;
+using static System.String;
 
 namespace _2020
 {
@@ -14,26 +17,10 @@ namespace _2020
         public static int Part2(string filePath) =>
             DataSet(filePath).Count(p => p.IsValid());
 
-        public static IEnumerable<PassportInfo> DataSet(string path)
-        {
-            var lines = File.ReadAllLines(path).Append(string.Empty).ToArray();
-            var passportData = string.Empty;
-            var i = 0;
-            do
-            {
-                var line = lines[i].Trim();
-                if (line == string.Empty)
-                {
-                    yield return new PassportInfo(passportData);
-                    passportData = string.Empty;
-                }
-                else
-                {
-                    passportData = string.Concat(passportData, " ", line);
-                }
-                i++;
-            } while (i < lines.Length);
-        }
+        private static IEnumerable<PassportInfo> DataSet(string path) =>
+            File.ReadAllText(path).Split(NewLine+NewLine)
+                .Select(block => Join(' ',block.Split(NewLine)))
+                .Select(passportData => new PassportInfo(passportData));
     }
 
     public class PassportInfo
