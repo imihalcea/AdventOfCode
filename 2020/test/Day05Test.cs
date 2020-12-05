@@ -16,6 +16,12 @@ namespace _2020.test
             Answer(Part1,INPUT_FILE_PATH);
         }
         
+        [Test]
+        public void answer_part2()
+        {
+            Answer(Part2,INPUT_FILE_PATH);
+        }
+        
         [TestCase("FBFBBFFRLR",357)]
         [TestCase("BFFFBBFRRR",567)]
         [TestCase("FFFBBBFRRR",119)]
