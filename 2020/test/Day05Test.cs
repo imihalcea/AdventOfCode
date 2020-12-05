@@ -28,7 +28,7 @@ namespace _2020.test
         [TestCase("BBFFBBFRLL",820)]
         public void examples(string boardingPass, int expectedId)
         {
-            var id = Day05.Decode(boardingPass);
+            var id = Day05.Id(boardingPass);
             Check.That(id).IsEqualTo(expectedId);
         }
         
