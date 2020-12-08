@@ -14,15 +14,17 @@ namespace _2020.tools
             Directed,
             Undirected
         }
-        public T[] V { get; }
+        public T[] Vertices { get; }
         private (int from, int to, int weight)[] E;
+        private Dictionary<(int @from, int to), int> Weights { get; }
         private int[][] Adj { get; }
-        public Graph((T from, T to, int d)[] edges, Kind kind = Kind.Directed)
+        public Graph((T from, T to, int w)[] edges, Kind kind = Kind.Directed)
         {
             _kind = kind;
-            V = edges.SelectMany(e=>new []{e.from,e.to}).Distinct().ToArray();
+            Vertices = edges.SelectMany(e=>new []{e.from,e.to}).Distinct().ToArray();
             E = edges.SelectMany(e => CreateEdge(e,kind)).Distinct().ToArray();
-            Adj = E.GroupBy(e => e.from, e => e.to).Aggregate(new int[V.Length][], (acc, g) =>
+            Weights = E.ToDictionary(e => (e.from, e.to), e => e.weight);
+            Adj = E.GroupBy(e => e.from, e => e.to).Aggregate(new int[Vertices.Length][], (acc, g) =>
             {
                 acc[g.Key] = g.ToArray();
                 return acc;
@@ -30,51 +32,29 @@ namespace _2020.tools
         }
 
         
-        /*public (int[] vertices, int?[] weights) HamiltonianCycle_BruteForce(Func<IEnumerable<(int[] vertices,int?[] weights)>, (int[] vertices,int?[] weights)> selector)
-        {
-            //optimizations ideas
-            // * limit the number of permutations to real possible paths in the graph 
-            // * approach based on a MinimumSpanningTree (MST)  
-            
-            var candidates = Range(0, V.Length).ToArray()
-                .Permutations()
-                .Select(c => (c, c.Pairwise((from, to) => Weight(from, to)).ToArray()));
-            return selector(candidates);
-        }*/
-       
-        
-        public (int?[] predecessors, int[] weights) Bellman_Ford(T source)
-        {
-            var weights = V.Select((node, idx) => IndexOf(source)==idx?0:int.MaxValue).ToArray();
-            var predecessors = new int?[V.Length];
 
-            foreach (var pass in Range(1,V.Length -1))
-            foreach (var (u, v, w) in E)
-                if (weights[u] != int.MaxValue && weights[u] + w < weights[v])
-                {
-                    weights[v] = weights[u] + w;
-                    predecessors[v] = u;
-                }
 
-            return (predecessors, weights);
-        }
-
-        public (int?[] predecessors, int[] weights) Dfs(T source)
+        public (int?[] predecessors, int[] weights) Dfsi(int srcIdx, Func<int, bool>? stopCondition=null, Action<int?,  int, int>? visitAction=null)
         {
-            var marked = new bool[V.Length]; 
-            var predecessors = new int?[V.Length];
-            var weights = V.Select((node, idx) => IndexOf(source)==idx?0:int.MaxValue).ToArray();
+            stopCondition ??= _ => false;
+            visitAction ??= (_, __,___) => { };
+            var marked = new bool[Vertices.Length]; 
+            var predecessors = new int?[Vertices.Length];
+            var weights = Vertices.Select((node, idx) => srcIdx==idx?0:int.MaxValue).ToArray();
             int? predecessor = null;   
             void VisitNode(int idx)
             {
+                
                 marked[idx] = true;
                 predecessors[idx] = predecessor;
-                weights[idx] = Weight(predecessor, idx).GetValueOrDefault(int.MaxValue);
+                var weight = Weight(predecessor, idx).GetValueOrDefault(int.MaxValue);
+                weights[idx] = weight;
+                visitAction(predecessor, idx,weight);
                 predecessor = idx;
 
             }
             var toVisit = new Stack<int>();
-            toVisit.Push(IndexOf(source));
+            toVisit.Push(srcIdx);
             do
             {
                 var visitIdx = toVisit.Pop();
@@ -82,59 +62,31 @@ namespace _2020.tools
                 if (!marked[visitIdx]) 
                     VisitNode(visitIdx);
                 
+                if(stopCondition(visitIdx)) return (predecessors, weights);
+                
                 foreach (var neighbor in NeighborsOf(visitIdx))
                     if (!marked[neighbor])
                         toVisit.Push(neighbor);
             } while (toVisit.Count > 0);
 
             return (predecessors, weights);
+        } 
+        public (int?[] predecessors, int[] weights) Dfs(T source, Func<int, bool> stopCondition, Action<int?,  int, int>? visitAction=null)
+        {
+            return Dfsi(IndexOf(source), stopCondition, visitAction);
         }       
 
-        public (int?[] predecessors, int[] weights) Bfs(T source)
-        {
-            var predecessors = new int?[V.Length];
-            var distance = V.Select((node, idx) => IndexOf(source)==idx?0:int.MaxValue).ToArray();
-            var marked = new bool[V.Length];
-            var queue = new Queue<int>();
-            var startIdx = IndexOf(source);
-            int? predecessor = null;
-            queue.Enqueue(startIdx);
-                    
-            while (queue.Count>0)
-            {
-                var current = queue.Dequeue();
-                if (!marked[current])
-                {
-                    visit(current);
-                    foreach (var n in NeighborsOf(current))
-                        if (!marked[n])
-                            queue.Enqueue(n);
-                }
-            }
+        public int IndexOf(T vertex) => Array.IndexOf(Vertices, vertex);
 
-            return (predecessors, distance);
-            void visit(int idx)
-            {
-                marked[idx] = true;
-                predecessors[idx] = predecessor;
-                distance[idx] = Weight(predecessor, idx).GetValueOrDefault(int.MaxValue);
-                predecessor = idx;
-            }
-        }
-
-        
- 
-        private int IndexOf(T vertex) => Array.IndexOf(V, vertex);
-
-        private int[] NeighborsOf(int vertex) =>
+        public int[] NeighborsOf(int vertex) =>
             Adj[vertex] ?? new int[0];
 
-        private int? Weight(int? from, int to)
+        public int? Weight(int? from, int to)
         {
             if (@from == null) return 0;
-            var egdes = E.Where(e => e.@from == @from && e.to == to).ToArray();
-            if (!egdes.Any()) return null;
-            return egdes.Single().weight;
+            var key = (@from.Value, to);
+            if (!Weights.ContainsKey(key)) return null;
+            return Weights[key];
         }
 
         private IEnumerable<(int from, int to, int weight)> CreateEdge((T from, T to, int weight) edgeDef,
