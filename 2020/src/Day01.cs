@@ -28,30 +28,6 @@ namespace _2020
             File.ReadAllLines(filePath).Select(int.Parse).ToArray();
 
 
-        public static IEnumerable<T[]> Combinations<T>(this T[] src, int k)
-        {
-            var n = src.Length;
-            var result = new int[k];
-            var stack = new Stack<int>();
-            stack.Push(0);
- 
-            while (stack.Count > 0)
-            {
-                var index = stack.Count - 1;
-                var value = stack.Pop();
- 
-                while (value < n) 
-                {
-                    result[index++] = value++;
-                    stack.Push(value);
- 
-                    if (index == k) 
-                    {
-                        yield return result.Select(i=>src[i]).ToArray();
-                        break;
-                    }
-                }
-            }
-        }
+  
     }
 }
