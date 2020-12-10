@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using NFluent.Extensions;
 
 namespace _2020.test
 {
@@ -20,10 +19,5 @@ namespace _2020.test
             sw.Stop();
             Console.WriteLine($"Response: {y} in {sw.ElapsedMilliseconds} ms");
         }
-        
-        public static void Print<T>(this T @this)
-        {
-            Console.WriteLine(@this.ToStringProperlyFormatted());
-        } 
     }
 }
