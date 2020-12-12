@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static _2020.State;
 
 namespace _2020
 {
@@ -9,23 +10,14 @@ namespace _2020
     {
         public static int Part2(Seats seats)
         {
-            int i = 0;
-            while (i<1000)
-            {
-                Console.Write(i%10==0?$"\n{i};":$"{i};");
-                var hasEvolved = seats.Evolve2(5);
-                i++;
-                if (!hasEvolved)
-                {
-                    return seats.CountOccupied();
-                }
-            }
-            return 0;
+            var hasEvolved = true;
+            while (hasEvolved) 
+                hasEvolved = seats.Evolve2(5);
+            return seats.CountOccupied();
         }
         public static int Part1(Seats seats)
         {
-            int i = 0;
-            var hasEvolved = seats.Evolve1(4);
+            var hasEvolved = true;
             while (hasEvolved) 
                 hasEvolved = seats.Evolve1(4);
             return seats.CountOccupied();
@@ -51,108 +43,112 @@ namespace _2020
         public int Xm { get; }
         public int Ym { get; }
         
-        private readonly List<Seat?> _flattenSeats;
+        private List<State> _states;
+        private readonly int[][] _coordsToIndex;
+        private readonly (int, int)[] _indexToCoords;
         public Seats(int xm, int ym)
         {
             Xm = xm;
             Ym = ym;
-            _flattenSeats = new List<Seat?>();
+            _states = new List<State>();
+            _coordsToIndex = new int[Xm+1][];
+            for (int x = 0; x <= xm; x++)
+            {
+                _coordsToIndex[x] = new int[ym+1];
+            }
+            _indexToCoords = new (int, int)[(Ym+1)*(Xm+1)];
         }
 
         public Seats AddSeat(char c, int x, int y)
         {
-            _flattenSeats.Add(c=='L'?new Seat(x, y):default(Seat));
+            _states.Add(c == 'L' ? Empty : Floor);
+            var index = _states.Count - 1;
+            _coordsToIndex[x][y] = index;
+            _indexToCoords[index] = (x, y);
             return this;
         }
-        public Seat? GetSeat((int x, int y) p)
+
+        private State GetState((int x, int y) p)
         {
             try
             {
-                var seat = _flattenSeats[p.y * Ym + p.x];
-                if(seat!=null && (seat.X!=p.x || seat.Y != p.y)) throw new NotSupportedException();
+                var seat = _states[CoordsToIndex(p)];
                 return seat;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return null;
+                throw;
             }
         }
+
+        private int CoordsToIndex((int x, int y) p) => _coordsToIndex[p.x][p.y];
+
+        private (int x, int y) IndexToCoords(int index) => _indexToCoords[index];
+        
 
         public Func<int, bool> Evolve1 => limit => Evolve(limit, OccupiedAdj);
         public Func<int, bool> Evolve2 => limit => Evolve(limit, OccupiedSeen);
 
-        public bool Evolve(int limit, Func<Seat, int> f) =>
-            _flattenSeats.Where(s=>s!=null).Any(s => s!.Evolve(f(s), limit));
-
-        public int CountOccupied() => _flattenSeats.Count(s => s!=null && s.IsOccupied);
-        
-        public int OccupiedAdj(Seat seat) => Adj(seat.X, seat.Y).Count(point =>
+        public bool Evolve(int limit, Func<int, int> f)
         {
-            var s = GetSeat(point);
-            return s!=null && s.IsOccupied;
-        });
-
-        public int OccupiedSeen(Seat seat)
-        {
-            return Directions.Sum(d => Look(d, seat.X, seat.Y));
+            var nextStates = _states
+                .Select((state,index)=>(state,index))
+                .Select(item => EvolveState(item.state,f(item.index), limit))
+                .ToList();
+            var hasEvolved = !_states.SequenceEqual(nextStates);
+            _states = nextStates;
+            return hasEvolved;
         }
 
-        private int Look(Func<int, int, (int, int)> direction, int x, int y)
+        private State EvolveState(State currentState, int occupied, int limit) =>
+            (currentState, occupied) switch
+            {
+                var (cs, o) when (cs, o) == (Empty, 0) => Occupied,
+                var (cs, o) when cs == Occupied && o >= limit => Empty,
+                _ => currentState
+            };
+
+
+        public int CountOccupied() => _states.Count(s => s==Occupied);
+        
+        private int OccupiedAdj(int index) => 
+            Adj(IndexToCoords(index)).Where(IsValid).Count(point => GetState(point) == Occupied);
+
+
+        private int OccupiedSeen(int index) => 
+            Directions.Sum(d => Look(d, IndexToCoords(index)));
+
+        private int Look(Func<(int, int), (int, int)> direction, (int x, int y) p)
         {
             while (true)
             {
-                (x,y) = direction(x, y);
-                if (!IsValid(x,y)) return 0;
-                if (GetSeat((x, y)) is { } s)
-                    return s.IsOccupied?1:0;
+                p = direction(p);
+                if (!IsValid(p)) return 0;
+                var state = GetState(p);
+                if (state != Floor )
+                    return state==Occupied?1:0;
             }
         }
 
-        private bool IsValid(int x, int y) => (x >= 0 && x < Xm) && (y >= 0 && y < Ym);
-        private static Func<int, int, (int, int)>[] Directions =>
-            new Func<int, int, (int, int)>[]
+        private bool IsValid((int x, int y) p) => (p.x >= 0 && p.x <= Xm) && (p.y >= 0 && p.y <= Ym);
+        private static Func<(int, int), (int, int)>[] Directions =>
+            new Func<(int, int), (int, int)>[]
             {
-               (x,y) => (x - 1, y),
-               (x,y) => (x + 1, y),
-               (x,y) => (x, y - 1),
-               (x,y) => (x, y + 1),
-               (x,y) => (x - 1, y - 1),
-               (x,y) => (x + 1, y - 1),
-               (x,y) => (x + 1, y + 1),
-               (x,y) => (x - 1, y + 1),
+               p => (p.Item1- 1, p.Item2),
+               p => (p.Item1 + 1, p.Item2),
+               p => (p.Item1, p.Item2 - 1),
+               p => (p.Item1, p.Item2 + 1),
+               p => (p.Item1 - 1, p.Item2 - 1),
+               p => (p.Item1 + 1, p.Item2 - 1),
+               p => (p.Item1 + 1, p.Item2 + 1),
+               p => (p.Item1 - 1, p.Item2 + 1),
             };
 
-        private (int, int)[] Adj(int x, int y) =>
-            Directions.Select(d => d(x, y)).ToArray();
+        private static (int, int)[] Adj((int x, int y) p) =>
+            Directions.Select(d => d(p)).ToArray();
     }
     
-    public class Seat
-    {
-        public int X { get; }
-        public int Y { get; }
-        private State SeatState { get; set; }
 
-        public Seat(int x, int y)
-        {
-            X = x; Y = y; SeatState = State.Empty;
-        }
-
-        public bool Evolve(int occupied, int limit)
-        {
-            var oldState = this.SeatState;
-            var newState = occupied switch
-            {
-                {} when occupied == 0 && IsEmpty => State.Occupied,
-                {} when occupied >= limit && IsOccupied => State.Empty,
-                _ => oldState
-            };
-            this.SeatState = newState;
-            return newState != oldState;
-        }
-
-        public bool IsEmpty => SeatState == State.Empty;
-        public bool IsOccupied => SeatState == State.Occupied;
-    }
-    public enum State { Occupied, Empty }
+    public enum State {None, Occupied, Empty, Floor }
 }

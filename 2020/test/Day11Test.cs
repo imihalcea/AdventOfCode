@@ -22,7 +22,7 @@ namespace _2020.test
         public void answer_part2()
         {
             var n = Answer(Part2,Dataset(INPUT_FILE_PATH));
-            //Check.That(n).IsEqualTo(2321);
+            Check.That(n).IsEqualTo(2102);
         }
         
         
