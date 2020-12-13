@@ -1,113 +1,94 @@
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using static _2020.Day12.DirAction;
+using static System.Enum;
+using static System.Int32;
+using static _2020.Day12.ShipAction;
 
 namespace _2020
 {
     public class Day12
     {
-        public static int Part1((DirAction action, int value)[] seats)
+        public static int Part1((ShipAction action, int value)[] input)
         {
-            return 0;
-        }
-
- 
-
-        public static (DirAction action, int value)[] Dataset(string path)
-        {
-            return File.ReadLines(path)
-                .Select(line=>(line.Substring(0,1), line.Substring(1)))
-                .Select(p=>(mapDirAction(p.Item1), mapValue(p.Item2)))
-                .ToArray();
-
-            int mapValue(string str)
+            var funcs = new Dictionary<ShipAction, Func<ShipAction, int, Ship, Ship>>()
             {
-                if (int.TryParse(str, out var value))
-                    return value;
-                throw new NotSupportedException();
-            }
-            
-            DirAction mapDirAction(string str)
+                [F] = (_,v,s)=> Move(s.dir,v,s),
+                [S] = Move,
+                [N] = Move,
+                [W] = Move,
+                [E] = Move,
+                [R] = Rotate,
+                [L] = Rotate
+            };
+            var ship = input.Aggregate(new Ship(), (s, n) =>
             {
-                if(Enum.TryParse<DirAction>(str, out var action))
-                    return action;
-                throw new NotSupportedException();
-            }
-        }
-
-        public class Ship
-        {
-            private DirAction _facing;
-            public Ship(DirAction facing = E)
-            {
-                _facing = facing;
-            }
-
-
-            public void Turn(DirAction action, int value)
-            {
-                var angle = value * Math.PI / 180 * Orientation(_facing, action);
-                var facingVector = DirToVector(_facing);
-                var newFacingVector = new int[]
-                {
-                    (int) Math.Round(facingVector[0] * Math.Cos(angle) - facingVector[1] * Math.Sin(angle)),
-                    (int) Math.Round(facingVector[1] * Math.Cos(angle) - facingVector[0] * Math.Sin(angle))
-                };
-                _facing = VectorToDir(newFacingVector);
-            }
-
-            public void Move(DirAction action, int value)
-            {
-                  
-                switch (action)
-                {
-                    case F:
-                        
-                }
-            }
-
-            private static int Orientation(DirAction facing, DirAction turn) =>
-                (facing, turn) switch
-                {
-                    (E,R) => -1,
-                    (E,L) => +1,
-                    (W,L) => -1,
-                    (W,R) => +1,
-                    (N,R) => +1,
-                    (N,L) => -1,
-                    (S,L) => -1,
-                    (S,R) => +1,
-                    _ => throw new NotSupportedException()
-                };
-
-            private static int[] DirToVector(DirAction facing) =>
-                facing switch
-                {
-                    E=>new[]{1,0},
-                    W=>new[]{-1,0},
-                    N=>new[]{0,1},
-                    S=>new[]{0,-1},
-                    _ =>throw new NotSupportedException()
-                };
-
-            private static DirAction VectorToDir(int[] vector) =>
-                (vector[0], vector[1]) switch
-                {
-                    (1, 0) => E,
-                    (-1, 0) => W,
-                    (0, 1) => N,
-                    (0, -1) => S,
-                    _ => throw new NotSupportedException()
-                };
-            
+                var (action, value) = n;
+                return funcs[action](action, value, s);
+            });
+            return Math.Abs(ship.pos.x) + Math.Abs(ship.pos.y);
         }
         
-        public enum DirAction
+        
+        public static Ship Rotate(ShipAction action, int value, Ship ship)
+        {
+            var angle = action==R?360-value:value;
+            var rad = angle * Math.PI / 180;
+            var (x, y) = Orientation[ship.dir];
+            var reorientation = (
+                (int) Math.Round(x * Math.Cos(rad) - y * Math.Sin(rad)),
+                (int) Math.Round(y * Math.Cos(rad) + x * Math.Sin(rad)));
+            var new_dir = Orientation.First(kv => kv.Value == reorientation).Key;
+            return new Ship(ship.pos, new_dir);
+        }
+
+        public static Ship Move(ShipAction action, int value, Ship ship)
+        { 
+            var (nx, ny) = ship.pos;
+            return action switch
+            {
+                N => new Ship((nx,ny+value),ship.dir),
+                S => new Ship((nx,ny-value),ship.dir),
+                W => new Ship((nx-value,ny),ship.dir),
+                E => new Ship((nx+value,ny),ship.dir),
+                _ => throw new NotSupportedException()
+            };
+        }
+            
+        public static (ShipAction action, int value)[] Dataset(string filePath) =>
+            File.ReadLines(filePath)
+                .Select(line=>(
+                    Parse<ShipAction>(line.Substring(0,1)), 
+                    Parse(line.Substring(1))))
+                .ToArray();
+
+        public enum ShipAction
         {
             N,S,W,E,L,R,F
         }
+        
+        private static Dictionary<ShipAction,(int x, int y)> Orientation = new Dictionary<ShipAction, (int x, int y)>()
+        {
+            [E]=(1,0),
+            [W]=(-1,0),
+            [N]=(0,1),
+            [S]=(0,-1)
+        };
+        public class Ship
+        {
+            public ShipAction dir;
+            public (int x, int y) pos;
+            public Ship((int x, int y)pos=default, ShipAction dir=E)
+            {
+                this.dir = dir;
+                this.pos = pos;
+            }
+        }
+
     }
 }
