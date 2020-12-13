@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using NUnit.Framework;
 using static _2020.test.TestExtensions;
 using static _2020.Day10;
