@@ -15,13 +15,30 @@ namespace _2020.test
         [Test]
         public void answer_part1()
         {
-            Answer(Part1,INPUT_FILE_PATH);
+           var r =  Answer(Part1,INPUT_FILE_PATH);
+           Check.That(r).IsEqualTo(1018336);
         }
+        
         
         [Test]
         public void answer_part2()
         {
-            Answer(Part2,INPUT_FILE_PATH);
+            var r =  Answer(Part2,INPUT_FILE_PATH);
+            Check.That(r).IsEqualTo(288756720);
+        }
+        
+        [Test]
+        public void answer_part1_combinations()
+        {
+            var r =  Answer(Part1_comb,INPUT_FILE_PATH);
+            Check.That(r).IsEqualTo(1018336);
+        }
+        
+        [Test]
+        public void answer_part2_combinations()
+        {
+            var r = Answer(Part2_comb,INPUT_FILE_PATH);
+            Check.That(r).IsEqualTo(288756720);
         }
 
         
