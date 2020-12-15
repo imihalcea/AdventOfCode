@@ -150,6 +150,5 @@ namespace _2020
     }
     
 
-    public enum State {
-        Occupied, Empty, Floor }
+    public enum State { Occupied, Empty, Floor }
 }
