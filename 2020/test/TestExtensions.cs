@@ -20,5 +20,13 @@ namespace _2020.test
             Console.WriteLine($"Response: {y} in {sw.ElapsedMilliseconds} ms");
             return y;
         }
+        public static Y Answer<A,X, Y>(Func<A,X, Y> f, A a,  X x)
+        {
+            var sw = Stopwatch.StartNew();
+            var y = f(a,x);
+            sw.Stop();
+            Console.WriteLine($"Response: {y} in {sw.ElapsedMilliseconds} ms");
+            return y;
+        }
     }
 }
