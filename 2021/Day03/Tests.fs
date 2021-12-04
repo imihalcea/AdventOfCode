@@ -18,7 +18,18 @@ let ``Example Part 1`` () =
         |> Seq.map parseLine
         |> array2D
         |> Solution.part1
-    Assert.Equal(result, 1660158)
+    Assert.Equal(198, result)
+
+
+[<Fact>]
+let ``Example Part 2`` () =
+    let result =
+        File.ReadLines("Day03/example.txt")
+        |> Seq.map parseLine
+        |> array2D
+        |> Solution.part2
+    Assert.Equal(230, result)
+
 
 [<Fact>]
 let ``Part 1`` () =
@@ -27,4 +38,14 @@ let ``Part 1`` () =
         |> Seq.map parseLine
         |> array2D
         |> Solution.part1
-    Assert.Equal(result, 3985686)
+    Assert.Equal(3985686, result)
+    
+    
+[<Fact>]
+let ``Part 2`` () =
+    let result =
+        File.ReadLines("Day03/input.txt")
+        |> Seq.map parseLine
+        |> array2D
+        |> Solution.part2
+    Assert.Equal(2555739, result)

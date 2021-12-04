@@ -2,9 +2,15 @@ module _2021.Day03.Solution
 
 open System.Collections
 
-type common = {least:bool; most:bool}
+type sortedBits = {least:bool; most:bool}
 
-let toCommon bits =
+let rows (matrix:bool[,]) =
+    matrix.[*,0].Length
+
+let cols (matrix:bool[,]) =
+    matrix.[0,*].Length
+
+let toSortedBits bits =
     let mutable oneCounter = 0
     let mutable zeroCounter = 0
     
@@ -17,31 +23,55 @@ let toCommon bits =
     match oneCounter >= zeroCounter with
     |true -> {least=false;most=true}
     |false -> {least=true;most=false}
+
+let sortBits (matrix:bool[,]) =
+    seq {0..(cols(matrix)-1)}
+        |> Seq.map (fun col -> matrix.[*, col])
+        |> Seq.map toSortedBits
+
     
-let toInt (bits:BitArray):int =
+let toInt (bits:bool[]):int =
     let arr = [|0|]
-    bits.CopyTo(arr,0)
+    let bitArr = BitArray(Array.rev bits)
+    bitArr.CopyTo(arr,0)
     arr.[0]
     
+let toRate (sortedBits:seq<sortedBits>) (selector: sortedBits -> bool) = 
+    sortedBits
+               |> Seq.map selector
+               |> Seq.toArray
+               |> toInt
+
+
+let rec findRating (selector: sortedBits -> bool) (col:int) (matrix:bool[,]) : bool[]=
+    let sortedBits = sortBits matrix
+    
+    let predicate (col:int) (src:bool[]) =
+        let bit = sortedBits |> Seq.skip col |> Seq.head |> selector
+        (src |> Seq.skip col |> Seq.head) = bit
+    
+          
+    match rows(matrix) with
+    |0 -> [|false|]
+    |1 -> matrix.[0,*]
+    |_ ->
+           seq{
+                for r in 0..(rows matrix)-1 do
+                    let bits = matrix.[r,*]
+                    if (predicate col bits) then
+                        yield bits
+            }
+            |> array2D
+            |> findRating selector (col+1) 
 
 let part1 (matrix:bool[,]) =
-   let commons =
-        seq {0..11}
-        |> Seq.map (fun col -> matrix.[*, col])
-        |> Seq.map toCommon
-        
-   let gamma = commons
-               |> Seq.map (fun c -> c.most)
-               |> Seq.rev
-               |> Seq.toArray
-               |> BitArray
-               |> toInt
-   
-   let epsilon = commons
-               |> Seq.map (fun c -> c.least)
-               |> Seq.rev
-               |> Seq.toArray
-               |> BitArray
-               |> toInt    
-   gamma * epsilon 
-    
+   let sortedBits = sortBits matrix
+   let gamma = toRate sortedBits (fun c -> c.most)
+   let epsilon = toRate sortedBits (fun c -> c.least)
+   gamma * epsilon
+
+
+let part2 (matrix:bool[,]) =
+   let o2Rating = toInt (findRating (fun c -> c.most) 0 matrix)
+   let co2Rating = toInt (findRating (fun c -> c.least) 0 matrix)
+   o2Rating * co2Rating 
