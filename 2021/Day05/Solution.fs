@@ -1,13 +1,7 @@
 module _2021.Day05.Solution
-
-open System
-
 type Line = { x1: int; y1: int; x2: int; y2: int }
 type Point = { x: int; y: int }
-let isVertical line = line.x1 = line.x2
-let isHorizontal line = line.y1 = line.y2
-let isDiagonal line =
-    not (isHorizontal line || isVertical line)
+let isStraightLine line = line.x1 = line.x2 || line.y1 = line.y2
 
 let diagonalPoints line =
     seq {
@@ -27,16 +21,15 @@ let straightPoints line =
         }
 
 let toPoints line =
-    match isDiagonal line with
-    | true -> diagonalPoints line
-    | false -> straightPoints line
+    match isStraightLine line with
+    | true -> straightPoints line
+    | false -> diagonalPoints line
 
 let countPoints (m: Map<Point, int>) (p: Point) =
     m |> Map.change  p (fun x ->
                             match x with
                             | Some (cnt) -> Some(cnt + 1)
                             | None -> Some(1))
-
 
 let solverPipeline lines predicate =
     lines
@@ -49,7 +42,7 @@ let solverPipeline lines predicate =
     |> Seq.length
 
 let part1 (lines: seq<Line>) =
-    solverPipeline lines (fun line -> isVertical line || isHorizontal line)
+    solverPipeline lines isStraightLine
 
 let part2 (lines: seq<Line>) =
     solverPipeline lines (fun _ -> true)    
