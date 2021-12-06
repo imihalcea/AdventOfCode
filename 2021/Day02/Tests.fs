@@ -20,7 +20,7 @@ let ``Part 1`` () =
         File.ReadLines("Day02/input.txt")
         |> Seq.map parseLine
         |> Solution.part1
-    Assert.Equal(result, 1660158)
+    Assert.Equal(1660158, result)
 
 
 [<Fact>]
@@ -29,4 +29,4 @@ let ``Part 2`` () =
         File.ReadLines("Day02/input.txt")
         |> Seq.map parseLine
         |> Solution.part2
-    Assert.Equal(result, 1660158)
+    Assert.Equal(1604592846,result)

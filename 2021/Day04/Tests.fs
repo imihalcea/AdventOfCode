@@ -31,6 +31,15 @@ let parseInput path =
         |> Array.map parseBoard
     (draw, boards)
 
+let parseInput2 path =
+    let allLines = File.ReadAllLines(path)
+    let draw = parseNumbers allLines.[0]
+    let boards =
+        allLines
+        |> Array.skip 1
+        |> Array.chunkBySize 6
+        |> Array.map (fun x -> parseBoard x |> Some) 
+    (draw, boards)
 
 [<Fact>]
 let ``Example Part 1`` () =
@@ -59,4 +68,4 @@ let ``Part 2`` () =
     let result =
         parseInput("Day04/input.txt")
         ||> Solution.part2
-    Assert.Equal(38594, result)
+    Assert.Equal(21184, result)
