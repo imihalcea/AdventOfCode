@@ -51,7 +51,7 @@ namespace _2020
         {
             var parts = expr.Split(' ');
             var opSymbols = parts.Where(p => p=="+" || p=="*").ToList();
-            var ops = parts.Where(p => p!="+" && p!="*").Select(d=> new Id(long.Parse(d))).Cast<Op>().ToList();
+            var ops = parts.Where(p => p!="+" && p!="*").Select(d=> new Ident(long.Parse(d))).Cast<Op>().ToList();
             
             while (opSymbols.Contains("+"))
             {
@@ -93,7 +93,7 @@ namespace _2020
             
             var parts = expr.Split(' ');
             var opSymbols = parts.Where(p => p=="+" || p=="*").ToArray();
-            var nums = parts.Where(p => p!="+" && p!="*").Select(d=> new Id(long.Parse(d))).ToArray();
+            var nums = parts.Where(p => p!="+" && p!="*").Select(d=> new Ident(long.Parse(d))).ToArray();
 
             var basicOp = opSymbols[1..].Zip(nums[2..])
                 .Aggregate(
@@ -137,11 +137,11 @@ namespace _2020
         public long Eval() => Left.Eval() + Right.Eval();
     }
 
-    public class Id : Op
+    public class Ident : Op
     {
         private readonly long _a;
 
-        public Id(long a)
+        public Ident(long a)
         {
             _a = a;
         }

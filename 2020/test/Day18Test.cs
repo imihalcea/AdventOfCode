@@ -28,10 +28,10 @@ namespace _2020.test
         public void simple_expression()
         {
             //1 + 2 * 3 + 4 * 5 + 6
-            var op1 = new Add(new Mul(new Add(new Mul(new Add(new Id(1), new Id(2)),new Id(3)),new Id(4)),new Id(5)),new Id(6));
+            var op1 = new Add(new Mul(new Add(new Mul(new Add(new Ident(1), new Ident(2)),new Ident(3)),new Ident(4)),new Ident(5)),new Ident(6));
             Check.That(op1.Eval()).IsEqualTo(71);
             //1 + (2 * 3) + (4 * (5 + 6))
-            var op2 = new Add(new Add(new Id(1), new Mul(new Id(2), new Id(3))), new Mul(new Id(4), new Add(new Id(5), new Id(6))));
+            var op2 = new Add(new Add(new Ident(1), new Mul(new Ident(2), new Ident(3))), new Mul(new Ident(4), new Add(new Ident(5), new Ident(6))));
             Check.That(op2.Eval()).IsEqualTo(51);
 
         }

@@ -1,6 +1,6 @@
 using NFluent;
 using NUnit.Framework;
-using static  _2020.Day20;
+using static  _2020.Day20m;
 using static _2020.test.TestExtensions;
 namespace _2020.test
 {
@@ -24,6 +24,23 @@ namespace _2020.test
             Check.That(n).IsEqualTo(20899048083289);
         }
         
+        [Test]
+        public void top_left_corner_example()
+        {
+            var tiles = Dataset(INPUT_FILE_PATH_EX);
+            var topLeftCorner = tiles.PutInPlaceTopLeftCorner();
+            Check.That(topLeftCorner.Id).IsEqualTo(1951);
+        }
+        
+        [Test]
+        public void reconstruct_image_example()
+        {
+            var tiles =  Dataset(INPUT_FILE_PATH_EX);
+            var imageTiles = tiles.ReconstructImage();
+        }
+
+ 
+
         [TestCase(new[]{1,0}, new[]{0,1}, false)]
         [TestCase(new[]{1,0,0,1,1,0,1,1,0,1}, new[]{1,0,0,1,0,1,1,1,0,1}, false)]
         [TestCase(new[]{1,0}, new[]{1,0}, true)]
