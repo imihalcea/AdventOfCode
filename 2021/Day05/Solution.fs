@@ -41,8 +41,8 @@ let solverPipeline lines predicate =
     |> Seq.where (fun cnt -> cnt >= 2)
     |> Seq.length
 
-let part1 (lines: seq<Line>) =
+let part1 lines =
     solverPipeline lines isStraightLine
 
-let part2 (lines: seq<Line>) =
+let part2 lines =
     solverPipeline lines (fun _ -> true)    
