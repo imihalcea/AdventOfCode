@@ -6,18 +6,28 @@ open Xunit
 open Swensen.Unquote
 
 let parseInput filePath =
-    let fish = Array.create 8 0
     File.ReadLines(filePath)
     |> Seq.map (fun s -> s.Split(","))
     |> Seq.concat
     |> Seq.map Int32.Parse
-    |> Seq.groupBy id
-    |> Seq.fold (fun m x -> Map.add (fst x) ((snd x)|> Seq.length) m) Map.empty
-    |> Map.iter (fun k v -> fish.[k]<-v)
-    fish
+
+[<Theory>]
+[<InlineData(18,26)>]
+[<InlineData(80,5934)>]
+[<InlineData(256,26984457539L)>]
+let ``example``(days:int, expected:int64)=
+   let result = parseInput "Day06/example.txt"
+                |> Solution.part1 days
+   test <@ result = expected  @>
 
 [<Fact>]
-let ``example part 1``()=
-   let result = parseInput "Day06/example.txt"
-                |> Solution.part1 18
-   test <@ result = 26  @>               
+let ``part 1``() =
+   let result = parseInput "Day06/input.txt"
+                |> Solution.part1 80
+   test <@ result = 390923L  @>
+
+[<Fact>]
+let ``part 2``() =
+   let result = parseInput "Day06/input.txt"
+                |> Solution.part1 256
+   test <@ result = 1749945484935L  @>
