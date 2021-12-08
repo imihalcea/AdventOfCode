@@ -27,21 +27,21 @@ let toInt value =
         ||> Set.intersect
         |> Set.count
         
-    let digitOfFiveLettersWord (word:string) (one:string) (four:string) =
+    let digitOfFiveLettersWord word one four =
         match word with
         | w when (numberOfCommonChars w one) = 2 -> 3
         | w when (numberOfCommonChars w four) = 3 -> 5
         | _ -> 2 
 
-    let digitOfSixLettersWord (word:string) (four:string) (seven:string) =
+    let digitOfSixLettersWord word four seven =
         match word with
         | w when (numberOfCommonChars w four) = 4 -> 9
         | w when (numberOfCommonChars w seven) = 3 -> 0
         | _ -> 6
         
-    let mapInt (index:int) (word:string) (one:string) (four:string) (seven:string) =
+    let mapInt index word one four seven =
         let digit = 
-            match word.Length with
+            match String.length word with
             |2 -> 1
             |3 -> 7
             |4 -> 4
