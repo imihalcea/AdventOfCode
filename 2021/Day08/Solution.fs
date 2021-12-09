@@ -1,6 +1,5 @@
 module _2021.Day08.Solution
 
-open System
 open System.Collections.Generic
 
 type Value = { input: string []; output: string [] }
