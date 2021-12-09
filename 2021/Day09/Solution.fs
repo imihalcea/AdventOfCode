@@ -31,19 +31,19 @@ let basinsSizes (map:int[,]):seq<int> =
     let rec basinSize (cnt:int) (lowPoint:int * int) =
         visited.Add lowPoint |> ignore
         (lowPoint,rows,cols)|||> adjacent
-        |> Seq.filter (fun p -> not(visited.Contains p) && map.[fst p, snd p] <> 9)
+        |> Seq.filter (fun p -> not(visited.Contains p) && map.[fst p, snd p] < 9)
         |> Seq.fold (fun cnt -> basinSize (cnt+1)) cnt
     
     map |> lowPoints |> Seq.map (basinSize 1)
  
-let part1 (map:int[,]) =
-    map |> lowPoints 
-    |> Seq.map (fun c -> 1+map.[fst c, snd c])
-    |> Seq.sum
-
 let part2 (map:int[,]) =
     map
     |> basinsSizes
     |> Seq.sortDescending
     |> Seq.take 3
     |> Seq.fold (fun acc it -> acc * it) 1
+
+let part1 (map:int[,]) =
+    map |> lowPoints 
+    |> Seq.map (fun c -> 1+map.[fst c, snd c])
+    |> Seq.sum

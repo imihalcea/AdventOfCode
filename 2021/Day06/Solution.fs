@@ -21,5 +21,3 @@ let part1 (days:int) (timers:seq<int>)  =
     |> Seq.toArray
     |> evolve days
     |> Array.fold (fun acc x -> acc + int64(x)) 0L
-    
-    
