@@ -2,7 +2,6 @@ module _2021.Day09.Tests
 
 open System
 open System.IO
-open _2021.Day09.Solution
 open Swensen.Unquote
 open Xunit
 
@@ -23,8 +22,6 @@ let ``example part2``()=
    let result = parseInput "Day09/example.txt"
                 |> Solution.part2 
    test <@ result = 1134  @>
-
-
 
 [<Fact>]
 let ``part1``()=

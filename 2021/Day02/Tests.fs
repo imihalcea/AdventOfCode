@@ -11,6 +11,7 @@ let parseLine (line:string) =
               |"forward" -> Dir.Forward
               |"up" -> Dir.Up
               |"down" -> Dir.Down
+              |_ -> failwith "not supported"
     let value = Convert.ToInt32(parts.[1])
     Command(dir, value)
 
