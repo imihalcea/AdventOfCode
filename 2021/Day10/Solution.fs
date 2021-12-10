@@ -35,8 +35,7 @@ let scan (input:string) =
             |_::remainingOpen -> check remainingOpen others
         
     input.ToCharArray() |> Seq.map parse |> Seq.toList |> check []       
-
-    
+   
 let part1 (lines:seq<string>):int =
     let scores = Map[(Close Parenthesis,3); (Close Bracket,57); (Close CurlyBrace, 1197); (Close Chevron,25137)]
 
@@ -58,13 +57,13 @@ let part2 (lines:seq<string>):int64 =
        |Ok(remaining) -> List.map opposite remaining
        |_ -> []
 
-    let scores = Map[(Close Parenthesis,1); (Close Bracket,2); (Close CurlyBrace, 3); (Close Chevron,4)]
+    let scoresMap = Map[(Close Parenthesis,1); (Close Bracket,2); (Close CurlyBrace, 3); (Close Chevron,4)]
     
     let scores =
             lines
             |> Seq.map scan
             |> Seq.map completeLine |> Seq.filter (fun l -> not (List.isEmpty l))      
-            |> Seq.map (Seq.fold (fun acc c -> acc * 5L + int64(scores.[c])) 0L)
+            |> Seq.map (Seq.fold (fun acc c -> acc * 5L + int64(scoresMap.[c])) 0L)
             |> Seq.sort
     
     let n = ((Seq.length scores) - 1)/2
