@@ -30,12 +30,12 @@ let scan (input:string) =
     let rec check (stack:list<Char>) (line:list<Char>)=
         match line with
         |[] -> Ok(stack)
-        |lh::lt ->
+        |current::others ->
             match stack with
-            |[] -> check [lh] lt
-            |_ when isOpen lh  -> check (lh::stack) lt
-            |sh::_ when isCorruption lh sh  -> Error(lh) 
-            |_::st -> check st lt
+            |[] -> check [current] others
+            |_ when isOpen current  -> check (current::stack) others
+            |lastOpen::_ when isCorruption current lastOpen  -> Error(current) 
+            |_::remainingOpen -> check remainingOpen others
         
     input.ToCharArray() |> Seq.map parse |> Seq.toList |> check []       
 
