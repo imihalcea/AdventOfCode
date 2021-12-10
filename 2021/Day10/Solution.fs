@@ -1,8 +1,5 @@
 module _2021.Day10.Solution
 
-open FSharpx.Collections
-open Microsoft.FSharp.Core
-
 type Char = Open of Item | Close of Item
 and Item = Parenthesis| Bracket |CurlyBrace |Chevron
 
