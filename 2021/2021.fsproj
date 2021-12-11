@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Tools\AocStack.fs" />
     <Content Include="Day01\input.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -78,6 +79,15 @@
     </Content>
     <Compile Include="Day10\Solution.fs" />
     <Compile Include="Day10\Tests.fs" />
+    <Content Include="Day11\input.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day11\example.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Day11\Solution.fs" />
+    <Compile Include="Day11\Tests.fs" />
+    
   </ItemGroup>
 
   <ItemGroup>
