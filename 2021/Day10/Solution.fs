@@ -14,19 +14,14 @@ let scan (input:string) =
     let parse c = mapping[c]
        
     let rec check (stack:list<Char>) (line:list<Char>)=
-        let isCorruption a =
-            match (a, (List.head stack)) with
-            |Close x, Open y when x <> y -> true
-            |_ -> false
-       
-        match line with
-        |[] -> Ok(stack)
-        |current::others ->
-            match current with
-            |_ when (List.isEmpty stack) -> check [current] others
-            |Open _                      -> check (current::stack) others
-            |Close _ when isCorruption current -> Error(current) 
-            |_                                 -> check (List.tail stack) others
+        match line, stack with
+        |[], _ -> Ok(stack)
+        |head::notScanned, [] -> check [head] notScanned
+        |head::notScanned, top::restStack ->
+            match head, top with
+            |Open _ , _ -> check (head::stack) notScanned
+            |Close x, Open y when x<>y -> Error(head) 
+            |_ -> check (restStack) notScanned
         
     input.ToCharArray() |> Seq.map parse |> Seq.toList |> check []       
    
