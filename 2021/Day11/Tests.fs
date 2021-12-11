@@ -11,7 +11,7 @@ let parseInput filePath =
     |> array2D
 
 [<Fact>]    
-let ``example part1``()=
+let ``example``()=
    let result = parseInput "Day11/example.txt"
                 |> Solution.part1 
    test <@ result = 1656  @>

@@ -1,35 +1,33 @@
 module _2021.Day11.Solution
 
 open System.Collections.Generic
-let mapSize (m:int[,])= (m.[*,0].Length - 1, m.[0,*].Length - 1)
+type CavernMap(grid:int[,])=
+      member s.mapSize = (grid.[*,0].Length - 1, grid.[0,*].Length - 1)
+      member s.IncrementAt p =
+            let newValue =  grid.[fst p, snd p]+1
+            grid.[fst p, snd p] <- newValue
+            (newValue,p)
+      member s.ResetAt p = grid[fst p, snd p] <- 0
 
-let increment (m:int[,]) p =
-    let newValue =  m[fst p, snd p]+1
-    m[fst p, snd p] <- newValue
-    (newValue,p)
-
-let reset (m:int[,]) p =
-    m[fst p, snd p] <- 0
-
-let points (m:int[,]) =
-    let rows, cols = (m.[*,0].Length - 1, m.[0,*].Length - 1)
-    seq{
-        for r in 0..rows do
-            for c in 0..cols do
+      member s.Points() =
+          let rows, cols = s.mapSize
+          seq{
+            for r in 0..rows do
+               for c in 0..cols do
                   yield (r,c)
-    }
-let adjacent (map:int[,]) point =
-    let rows, cols = mapSize map
-    let r,c = point
-    [(r-1,c); (r+1,c); (r, c-1); (r, c+1); (r+1, c-1); (r-1, c-1); (r+1, c+1); (r-1, c+1) ]
-    |> Seq.filter (fun p -> (fst p) >= 0 && (fst p) <= rows && (snd p) >= 0 && (snd p) <= cols)
+            }
+    
+      member s.Adjacent point =
+          let rows, cols = s.mapSize
+          let r,c = point
+          [(r-1,c); (r+1,c); (r, c-1); (r, c+1); (r+1, c-1); (r-1, c-1); (r+1, c+1); (r-1, c+1) ]
+          |> Seq.filter (fun p -> (fst p) >= 0 && (fst p) <= rows && (snd p) >= 0 && (snd p) <= cols)
 
-let evolve (map:int[,]) =
-    let reset = reset map
-    let adjacent = adjacent map
-
+let evolve (grid:int[,]) =
+    let cavern = CavernMap(grid)    
+    
     let increment (queue:Queue<int * int>) (p:int*int) =
-        match increment map p with
+        match cavern.IncrementAt(p) with
         |10,_  -> queue.Enqueue p
         |_ -> ()
     
@@ -38,28 +36,28 @@ let evolve (map:int[,]) =
             let flashed = HashSet<int*int>()
             let queue = Queue<int*int>()
            
-            for p in points map do
+            for p in cavern.Points() do
                 increment queue p
                        
             while queue.Count > 0 do
                 let flash = queue.Dequeue()
                 flashed.Add(flash) |> ignore
                 
-                for p in (adjacent flash) do
+                for p in cavern.Adjacent(flash) do
                     increment queue p
                 
             for p in flashed do
-                reset p
+                cavern.ResetAt(p)
             
             yield flashed.Count    
     }
 
-let part1 (map:int[,]) =
-    evolve map
+let part1 (grid:int[,]) =
+    evolve grid
     |> Seq.take 100
     |> Seq.sum
 
-let part2 (map:int[,]) =
-    (evolve map
+let part2 (grid:int[,]) =
+    (evolve grid
     |> Seq.takeWhile (fun flash -> flash <> 100)
     |> Seq.length) + 1
