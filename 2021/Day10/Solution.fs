@@ -31,8 +31,8 @@ let part1 (lines:seq<string>):int =
     lines
     |> Seq.map scan
     |> Seq.map (fun r -> match r with
-                        |Error c -> scores[c]
-                        | _ -> 0)
+                         |Error c -> scores[c]
+                         | _ -> 0)
     |> Seq.sum
 
 let part2 (lines:seq<string>):int64 =
