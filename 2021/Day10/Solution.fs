@@ -10,29 +10,23 @@ let mapping = Map[
                   ('<', Open Chevron); ('>', Close Chevron)
                   ]
 
-
 let scan (input:string) =
     let parse c = mapping[c]
-    
-    let isOpen a =
-        match a with
-        |Open _ -> true
-        |_ -> false
-        
-    let isCorruption a b =
-        match (a, b) with
-        |Close x, Open y when x <> y -> true
-        |_ -> false
-    
+       
     let rec check (stack:list<Char>) (line:list<Char>)=
+        let isCorruption a =
+            match (a, (List.head stack)) with
+            |Close x, Open y when x <> y -> true
+            |_ -> false
+       
         match line with
         |[] -> Ok(stack)
         |current::others ->
-            match stack with
-            |[] -> check [current] others
-            |_ when isOpen current  -> check (current::stack) others
-            |lastOpen::_ when isCorruption current lastOpen  -> Error(current) 
-            |_::remainingOpen -> check remainingOpen others
+            match current with
+            |_ when (List.isEmpty stack) -> check [current] others
+            |Open _                      -> check (current::stack) others
+            |Close _ when isCorruption current -> Error(current) 
+            |_                                 -> check (List.tail stack) others
         
     input.ToCharArray() |> Seq.map parse |> Seq.toList |> check []       
    
