@@ -19,25 +19,6 @@ module Graph=
          |_ -> match (System.Char.IsLower name[0]) with
                |true -> Small(name)
                |false -> Big(name)
-      member s.IsStartVertex =
-         match s with
-         |Start _ -> true
-         |_ -> false
-
-      member s.IsEndVertex =
-         match s with
-         |End _ -> true
-         |_ -> false
-      
-      member s.IsBigVertex =
-         match s with
-         |Big _ -> true
-         |_ -> false
-      
-      member s.IsSmallVertex =
-         match s with
-         |Small _ -> true 
-         |_ -> false
       
    type Graph = Map<Vertex, Vertex list>
    

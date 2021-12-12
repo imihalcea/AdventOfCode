@@ -1,6 +1,5 @@
 module _2021.Day12.Solution
 
-open FSharpx.Collections.Tagged
 open Microsoft.FSharp.Collections
 open _2021.Day12
 
