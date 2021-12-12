@@ -62,10 +62,3 @@ let ``Part 1`` () =
         parseInput("Day04/input.txt")
         ||> Solution.part1
     Assert.Equal(38594, result)
-
-[<Fact>]
-let ``Part 2`` () =
-    let result =
-        parseInput("Day04/input.txt")
-        ||> Solution.part2
-    Assert.Equal(21184, result)

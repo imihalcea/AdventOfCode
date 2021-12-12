@@ -42,7 +42,7 @@ let ``example part2``()=
 let ``part 1``()=
    let result = parseInput "Day08/input.txt"
                 |> Solution.part1 
-   test <@ result = 26  @>
+   test <@ result = 303  @>
 
 [<Fact>]
 let ``part 2``()=
