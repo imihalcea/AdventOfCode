@@ -7,11 +7,7 @@ open FSharpx.Collections
 module Graph=
    
    type Vertex =
-      |Start
-      |End
-      |Big of string
-      |Small of string
-      
+      Start |End |Big of string |Small of string
       static member Create (name:string)=
          match name with
          |"start" -> Start
@@ -23,16 +19,13 @@ module Graph=
    type Graph = Map<Vertex, Vertex list>
    
    let empty = Map.empty<Vertex, Vertex list>
-
-   let contains vertex graph = Map.containsKey vertex graph
-  
    let neighborsOf (vertex:Vertex) (graph:Graph) =
-      match contains vertex graph with
+      match Map.containsKey vertex graph with
       |true -> graph.[vertex]
       |false -> []
 
    let add (graph:Graph) (vertex:Vertex)=
-      match contains vertex graph with
+      match Map.containsKey vertex graph with
       |true->graph
       |false-> graph |> Map.add vertex []
 
