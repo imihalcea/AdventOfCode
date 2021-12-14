@@ -20,9 +20,8 @@ module Graph=
    
    let empty = Map.empty<Vertex, Vertex list>
    let neighborsOf (vertex:Vertex) (graph:Graph) =
-      match Map.containsKey vertex graph with
-      |true -> graph.[vertex]
-      |false -> []
+      graph.[vertex]
+
 
    let add (graph:Graph) (vertex:Vertex)=
       match Map.containsKey vertex graph with
@@ -41,26 +40,45 @@ module Graph=
       |> addMany graph
       |> _addEdge vertexFrom vertexTo
 
-     
-   let findPaths (graph:Graph) (smallCaveRule:bool -> bool ->bool)=
-         let mutable toVisit = Stack<(Vertex list * bool)>()
-         toVisit.Push ([Start],false)
+   let pushOnPath (path:Stack<Vertex>) (n:Vertex) =
+      path.Push n
+      path
+      
+   let findPaths (graph:Graph) (rule: Vertex-> bool ->bool->bool*bool)=
+         let mutable toVisit = Stack<(Vertex list * HashSet<Vertex> * bool)>()
+         toVisit.Push ([Start],HashSet<Vertex>([Start]),false)
          seq{
             while toVisit.Count>0 do
-               let (path, twice) = toVisit.Pop()
+               let (path, vertices, twice) = toVisit.Pop()
                let current = List.head path
                
-               for n in (neighborsOf current graph) do
-                  match (n) with
+               for n in graph[current] do
+                  match n with
                   |End  -> yield (End::path) |> List.rev
-                  |Small _ ->
+                  |_ ->
                      let inPath = List.contains n path
-                     if (smallCaveRule inPath twice) then
-                       toVisit.Push ((n::path), inPath || twice)
-                  |Big _ -> toVisit.Push((n::path),twice)
-                  |_ -> ()
+                     match (rule n inPath twice) with
+                     |true,newTwice ->
+                        toVisit.Push ((n::path), vertices,newTwice)
+                     |false, _ -> ()
          }  
-   
+   let countPaths (graph:Graph) (rule: Vertex-> bool ->bool->bool*bool)=
+         let mutable toVisit = Stack<(Vertex * Set<Vertex> * bool)>()
+         toVisit.Push (Start,Set.ofList [Start],false)
+         let mutable count = 0
+         while toVisit.Count>0 do
+               let (current, vertices, twice) = toVisit.Pop()
+               
+               for n in graph[current] do
+                  match n with
+                  |End  -> count <- count+1
+                  |_ ->
+                     let inPath = Set.contains n vertices
+                     match (rule n inPath twice) with
+                     |true,hasSmallTwice ->
+                        toVisit.Push (n, (Set.add n vertices),hasSmallTwice)
+                     |false, _ -> ()
+         count
 [<AutoOpen>]
 module Undirected=
    let addEdge (graph:Graph) vertices  = 

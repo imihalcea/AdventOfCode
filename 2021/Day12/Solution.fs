@@ -4,17 +4,25 @@ open Microsoft.FSharp.Collections
 open _2021.Day12
 
 
-let atMostOnce inPath _ =
-    not(inPath)
+let smallCaveatMostOnce n inPath twice =
+    match n with
+    |Big _ -> (true, twice)
+    |Small _ -> (not(inPath),twice)
+    |Start _ -> (not(inPath),twice)
+    |_ -> failwith "Not supported"
 
-let singleSmallCaveTwice inPath twice =
-    not(inPath) || inPath && not(twice)
+let singleSmallCaveTwice n inPath twice =
+    match n with
+    |Small _ -> (not(inPath) || inPath && not(twice),inPath || twice)
+    |Big _ -> (true, twice)
+    |Start _ -> (not(inPath),twice)
+    | _-> failwith "Not Supported"
 
 
 let part1 (g:Graph) =
-    findPaths g atMostOnce   
-    |> Seq.length
+    countPaths g smallCaveatMostOnce   
+    //|> Seq.length
 
 let part2 (g:Graph) =
-    findPaths g singleSmallCaveTwice   
-    |> Seq.length    
+    countPaths g singleSmallCaveTwice   
+    //|> Seq.length    

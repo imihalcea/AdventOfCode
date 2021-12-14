@@ -26,7 +26,7 @@ let ``example part 1``()=
         "b-end"
     |]
     
-    let paths = Graph.findPaths graph atMostOnce|> Seq.toList
+    let paths = Graph.findPaths graph smallCaveatMostOnce|> Seq.toList
     test <@ List.contains [Start; Big("A"); End ] paths  @>
     test <@ List.contains [Start; Big("A"); Small("b");  End ] paths  @>
     test <@ List.contains [Start; Big("A"); Small("b");  Big("A"); End ] paths  @>
