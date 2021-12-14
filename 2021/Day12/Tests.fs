@@ -27,11 +27,11 @@ let ``example part 1``()=
     |]
     
     let paths = Graph.findPaths graph smallCaveatMostOnce|> Seq.toList
-    test <@ List.contains [Start; Big("A"); End ] paths  @>
-    test <@ List.contains [Start; Big("A"); Small("b");  End ] paths  @>
-    test <@ List.contains [Start; Big("A"); Small("b");  Big("A"); End ] paths  @>
-    test <@ List.contains [Start; Big("A"); Small("c");  Big("A"); End ] paths  @>
-    test <@ List.contains [Start; Big("A"); Small("b"); Big("A"); Small("c"); Big("A"); End ] paths  @>
+    test <@ List.contains [Start; Big "A"; End ] paths  @>
+    test <@ List.contains [Start; Big "A"; Small("b");  End ] paths  @>
+    test <@ List.contains [Start; Big "A"; Small("b");  Big("A"); End ] paths  @>
+    test <@ List.contains [Start; Big "A"; Small("c");  Big("A"); End ] paths  @>
+    test <@ List.contains [Start; Big "A"; Small("b"); Big("A"); Small("c"); Big("A"); End ] paths  @>
     test <@ paths.Length = 10 @>    
 
 [<Fact>]

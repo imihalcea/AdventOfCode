@@ -97,13 +97,23 @@
     <Compile Include="Day12\Graph.fs" />
     <Compile Include="Day12\Solution.fs" />
     <Compile Include="Day12\Tests.fs" />
+    <Content Include="Day13\input.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day13\example.txt" />
+    <Compile Include="Day13\Solution.fs" />
+    <Compile Include="Day13\Tests.fs" />
     
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FSharpx.Collections" Version="3.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="SkiaSharp" Version="2.80.3" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
     <PackageReference Include="Unquote" Version="6.1.0" />
+    <PackageReference Include="XPlot.GoogleCharts" Version="3.0.1" />
+    <PackageReference Include="XPlot.Plotly" Version="4.0.6" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
