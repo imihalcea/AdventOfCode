@@ -111,6 +111,13 @@
     </Content>
     <Compile Include="Day15\Solution.fs" />
     <Compile Include="Day15\Tests.fs" />
+    <Content Include="Day16\input.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Day16\BitTools.fs" />
+    <Compile Include="Day16\BitsReader.fs" />
+    <Compile Include="Day16\Solution.fs" />
+    <Compile Include="Day16\Tests.fs" />
     
   </ItemGroup>
 
