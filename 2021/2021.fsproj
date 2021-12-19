@@ -118,6 +118,8 @@
     <Compile Include="Day16\BitsReader.fs" />
     <Compile Include="Day16\Solution.fs" />
     <Compile Include="Day16\Tests.fs" />
+    <Compile Include="Day17\Solution.fs" />
+    <Compile Include="Day17\Tests.fs" />
     
   </ItemGroup>
 
