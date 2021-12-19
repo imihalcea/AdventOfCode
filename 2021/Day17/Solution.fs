@@ -1,7 +1,5 @@
 module _2021.Day17.Solution
 
-open System
-
 type Status = NotHit | Hit | Exceed
 
 type Target(x1:int, y1:int, x2:int, y2:int)=
@@ -18,23 +16,26 @@ type Target(x1:int, y1:int, x2:int, y2:int)=
         else
             NotHit
 
+let rec isHit (point:int*int) (box:Target) (velocity:int*int) =
+    let vx, vy = velocity
+    let x, y = point
+    match box.Check(x,y) with
+    |Hit-> true
+    |Exceed-> false
+    |NotHit-> (isHit (x+vx,y+vy) box ((vx - sign vx),(vy-1)))
+
+//the lower bound of vx can be approximated with some basic math
+//is optimization is needed
+// vy € [yMin; abs(yMin)]
+let part2 (target:Target):int=
+    Seq.allPairs {1..target.X2} {target.Y2..(abs target.Y2)}
+    |> Seq.map (isHit (0,0) target)
+    |> Seq.filter id 
+    |> Seq.length
+
 // vy € [yMin; abs(yMin)]
 // vy will be 0 at some point
 // the answer to part one is Sum (vy, vy-1, vy-2) apply gauss trick for the sum
 let part1 (target:Target):int =
     let y = max (abs target.Y1) (abs target.Y2)
     y * (y-1) / 2
-
-let rec isHit x y (box:Target) (velocity:int*int) =
-    let vx, vy = velocity
-    match box.Check(x,y) with
-    |Hit-> true
-    |Exceed-> false
-    |NotHit-> (isHit (x+vx) (y+vy) box ((vx - sign vx),(vy-1)))
-
-// vy € [yMin; abs(yMin)]
-let part2 (target:Target):int=
-    Seq.allPairs {1..target.X2+1} {target.Y2..(abs target.Y2)}
-    |> Seq.map (isHit 0 0 target)
-    |> Seq.filter id 
-    |> Seq.length
