@@ -133,6 +133,8 @@
 
   <ItemGroup>
     <PackageReference Include="FSharpx.Collections" Version="3.0.1" />
+    <PackageReference Include="MathNet.Numerics.FSharp" Version="5.0.0-alpha08" />
+    <PackageReference Include="MathNet.Spatial" Version="0.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="SkiaSharp" Version="2.80.3" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
