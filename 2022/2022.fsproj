@@ -14,6 +14,11 @@
     <Content Include="Day01\input.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Day02\input.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Day02\Solution.fs" />
+    <Compile Include="Day02\Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
