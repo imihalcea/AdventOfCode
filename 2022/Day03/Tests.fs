@@ -39,5 +39,5 @@ let ``Part 1`` () =
 let ``Part 2`` () =
     let data =File.ReadAllText("Day03/input.txt")
     let result = part2 data
-    test  <@ result = 7831  @>
+    test  <@ result = 2683  @>
     
