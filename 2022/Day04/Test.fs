@@ -19,6 +19,8 @@ let ``overlaps``()=
     test <@ Solution.overlaps (2s,4s) (6s,8s) = false @>
     test <@ Solution.overlaps (2s,4s) (3s,5s) = true @>
     test <@ Solution.overlaps (2s,4s) (5s,7s) = false @>
+    test <@ Solution.overlaps (2s,4s) (0s,3s) = true @>
+    test <@ Solution.overlaps (0s,3s) (2s,4s) = true @>
     
 
 [<Fact>]
