@@ -27,4 +27,4 @@ let ``input 1``() =
 [<Fact>]
 let ``input 2``() =
     let r = File.ReadAllLines("Day07/input.txt") |> part2
-    test <@ r = 1444896 @>   
+    test <@ r = 404395 @>   
