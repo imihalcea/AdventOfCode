@@ -40,10 +40,7 @@ type DirInfo(parent:DirInfo option, name:string) =
         for d in s.ListDirs() do
             if (sizePredicate (d:>IFs).Size) then
                 acc.Add(d)
-            d.Explore(acc, sizePredicate)
-    
-       
-            
+            d.Explore(acc, sizePredicate)   
 
 type InputLine =
     |CD of string
@@ -103,10 +100,8 @@ let part2 (data:string seq):int =
     |> Seq.map parseLine
     |> Seq.fold processLine root |> ignore
     
-    
-    
-    let tofree = 30000000 - (70000000 - (root :> IFs).Size)
-    findDirectories root (fun x ->  x >= tofree)
+    let toFree = 30000000 - (70000000 - (root :> IFs).Size)
+    findDirectories root (fun x ->  x >= toFree)
     |> List.map (fun it -> (it:>IFs).Size)
     |> List.sort
     |> List.head
