@@ -10,7 +10,7 @@ let ``collinear trees``()=
     let result =
         File.ReadAllLines("Day08/ex.txt")
         |> parseInput
-        |> collinearTrees (2,2)
+        |> sameRowOrColumn (2,2)
     test <@ result = [| [|5;6|]; [|3;2|]; [|5;3|]; [|5;3|]  |] @>
 
 [<Fact>]

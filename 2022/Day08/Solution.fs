@@ -8,13 +8,13 @@ let parseInput (lines : string array):int[,]=
     lines |> Array.map (fun line -> line |> Seq.map (fun c -> Convert.ToInt32(c.ToString())))
     |> array2D
 
-let collinearTrees  (t:int*int) (m:int[,])=
-    let r,c = t
-    [|m[r,..c-1] |> Array.rev ; m[r,c+1..]; m[..r-1,c] |> Array.rev; m[r+1..,c]|]
+let sameRowOrColumn  (tree:int*int) (grid:int[,])=
+    let r,c = tree
+    [|grid[r,..c-1] |> Array.rev ; grid[r,c+1..]; grid[..r-1,c] |> Array.rev; grid[r+1..,c]|]
 
-let isVisible (m:int[,]) (t:int*int)=
-    let v = m[fst(t),snd(t)]
-    collinearTrees t m
+let isVisible (grid:int[,]) (tree:int*int)=
+    let v = grid[fst(tree),snd(tree)]
+    sameRowOrColumn tree grid
     |> Array.map (Array.forall (fun x -> x < v )) 
     |> set |> Set.contains true
 
@@ -29,9 +29,9 @@ let takeUntil (predicate:int -> bool) (s:int seq):int array =
                 yield x     
     } |> Array.ofSeq
 
-let computeScore (m:int[,]) (t:int*int)=
-    let v = m[fst(t),snd(t)]
-    collinearTrees t m
+let computeScore (grid:int[,]) (tree:int*int)=
+    let v = grid[fst(tree),snd(tree)]
+    sameRowOrColumn tree grid
     |> Array.map (takeUntil (fun x -> x >= v ))
     |> Array.map Array.length
     |> Array.fold (*) 1
@@ -43,15 +43,15 @@ let points rows cols =
                 yield (r,c)
     }
 
-let countVisible (m:int[,]) =
-    points (m.[*,0].Length - 1) (m.[0,*].Length - 1)
-    |> Seq.map (isVisible m)
+let countVisible (grid:int[,]) =
+    points (grid.[*,0].Length - 1) (grid.[0,*].Length - 1)
+    |> Seq.map (isVisible grid)
     |> Seq.filter id
     |> Seq.length
 
-let bestScore (m:int[,]) =
-    points (m.[*,0].Length - 1) (m.[0,*].Length - 1)
-    |> Seq.map (computeScore m)
+let bestScore (grid:int[,]) =
+    points (grid.[*,0].Length - 1) (grid.[0,*].Length - 1)
+    |> Seq.map (computeScore grid)
     |> Seq.sortDescending
     |> Seq.head
     
