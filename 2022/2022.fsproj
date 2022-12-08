@@ -36,6 +36,19 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="Day05\StackTests.fs" />
+    <Compile Include="Day06\Solution.fs" />
+    <Compile Include="Day06\Tests.fs" />
+    <Content Include="Day06\input.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Day07\Solution.fs" />
+    <Compile Include="Day07\Tests.fs" />
+    <Content Include="Day07\input.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day07\ex1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
